@@ -1,7 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 
 public class MicrophoneDropdown : MonoBehaviour
 {
@@ -28,11 +27,11 @@ public class MicrophoneDropdown : MonoBehaviour
     {
         microOptions = new List<string>(Microphone.devices);
         microDropdown.AddOptions(microOptions);
-        if (microOptions.Count > 0)
-        {
-            selectedMicro = 0;
-            Debug.Log("Default selected index " + selectedMicro + " -> " + microDropdown.options[selectedMicro].text);
-        }
+
+        if (microOptions.Count <= 0) return;
+
+        selectedMicro = 0;
+        Debug.Log("Default selected index " + selectedMicro + " -> " + microDropdown.options[selectedMicro].text);
     }
 
     public void OnOptionSelected(int index)
