@@ -686,8 +686,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudioManager
   guitarAudioSource: {fileID: 914719962}
-  microphoneDropdown: {fileID: 2045983172}
+  microphoneSelector: {fileID: 2045983172}
   noteText: {fileID: 498520834}
+  sampleRate: 44100
+  sampleWindow: 4096
 --- !u!114 &2045983172 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4562549025613249595, guid: e22b9bbbe7a6ae04a873211ae2d3c8b0,

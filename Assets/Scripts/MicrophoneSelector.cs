@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class MicrophoneDropdown : MonoBehaviour
+public class MicrophoneSelector : MonoBehaviour
 {
     [SerializeField] private TMP_Dropdown microDropdown;
-    private List<string> microOptions = new List<string>();
+    private List<string> microOptions = new();
     private int selectedMicro = -1;
 
     private void Awake()

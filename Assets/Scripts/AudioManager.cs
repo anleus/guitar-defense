@@ -3,34 +3,68 @@ using UnityEngine;
 
 public class AudioManager : MonoBehaviour
 {
+    [Header("References")] 
     [SerializeField] private AudioSource guitarAudioSource;
-    [SerializeField] private MicrophoneDropdown microphoneDropdown;
+    [SerializeField] private MicrophoneSelector microphoneSelector;
     [SerializeField] private TMP_Text noteText;
+
+    [Header("Settings")] 
+    [SerializeField] private int sampleRate = 44100;
+    [SerializeField] private int sampleWindow = 4096;
     
-    private MicrophoneProcessor micProcessor;
+    private PitchProcessor pitchProcessor;
+    private AudioClip microphoneClip;
+    private float[] audioSamples;
+
+    private bool isRecording;
+    private string selectedMicName;
 
     private void Start()
     {
-        micProcessor = new MicrophoneProcessor(44100, 4096);
+        audioSamples = new float[sampleWindow];
+        pitchProcessor = new PitchProcessor(sampleRate);
     }
 
     private void Update()
     {
-        if (micProcessor.IsRecording)
+        if (!isRecording) return;
+
+        var micPos = Microphone.GetPosition(selectedMicName) - sampleWindow;
+        if (micPos < 0)
         {
-            var note = micProcessor.Process(microphoneDropdown.GetSelectedMicro());
-            noteText.text = note;
+            noteText.text = "---";
+            return;
         }
+
+        microphoneClip.GetData(audioSamples, micPos);
+
+        var frequency = pitchProcessor.Process(audioSamples);
+
+        noteText.text = frequency;
     }
 
     public void StartRecording()
     {
-        micProcessor.StartRecording(microphoneDropdown.GetSelectedMicro(), guitarAudioSource);
+        selectedMicName = microphoneSelector.GetSelectedMicro();
+
+        microphoneClip = Microphone.Start(selectedMicName, true, 1, sampleRate);
+        
+
+        while (!(Microphone.GetPosition(selectedMicName) > 0))
+        {
+        }
+
+        guitarAudioSource.clip = microphoneClip;
+        guitarAudioSource.loop = true;
+        guitarAudioSource.Play();
+        
+        isRecording = true;
     }
 
     public void StopRecording()
     {
-        micProcessor.StopRecording(microphoneDropdown.GetSelectedMicro());
+        Microphone.End(selectedMicName);
+
+        isRecording = false;
     }
-    
 }

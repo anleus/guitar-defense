@@ -5,11 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class ExtendedMicrophoneManager : MonoBehaviour
 {
+    [FormerlySerializedAs("microphoneDropdown")]
     [Header("Componentes")]
-    [SerializeField] private MicrophoneDropdown microphoneDropdown;
+    [SerializeField] private MicrophoneSelector microphoneSelector;
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private TMP_Text noteText;
     [SerializeField] private TMP_Text chordText;
@@ -28,24 +30,24 @@ public class ExtendedMicrophoneManager : MonoBehaviour
 
     public void StartRecording()
     {
-        if (!microphoneDropdown.AvailableMicros())
+        if (!microphoneSelector.AvailableMicros())
         {
             Debug.LogWarning("No hay dispositivos disponibles");
             return;
         }
 
-        microphoneClip = Microphone.Start(microphoneDropdown.GetSelectedMicro(), true, 10, sampleRate);
+        microphoneClip = Microphone.Start(microphoneSelector.GetSelectedMicro(), true, 10, sampleRate);
         audioSamples = new float[sampleWindow];
         spectrum = new float[sampleSpectrum];
 
-        Debug.Log("Grabando de: " + microphoneDropdown.GetSelectedMicro());
+        Debug.Log("Grabando de: " + microphoneSelector.GetSelectedMicro());
     }
 
     private void Update()
     {
         if (microphoneClip == null) return;
 
-        int micPos = Microphone.GetPosition(microphoneDropdown.GetSelectedMicro()) - sampleWindow;
+        int micPos = Microphone.GetPosition(microphoneSelector.GetSelectedMicro()) - sampleWindow;
         if (micPos < 0) return;
 
         microphoneClip.GetData(audioSamples, micPos);
@@ -80,9 +82,9 @@ public class ExtendedMicrophoneManager : MonoBehaviour
 
     public void StopRecording()
     {
-        if (!microphoneDropdown.AvailableMicros()) return;
+        if (!microphoneSelector.AvailableMicros()) return;
 
-        string selectedMicro = microphoneDropdown.GetSelectedMicro();
+        string selectedMicro = microphoneSelector.GetSelectedMicro();
         audioSource.Stop();
         Microphone.End(selectedMicro);
 

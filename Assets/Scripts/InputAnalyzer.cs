@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class InputAnalyzer : MonoBehaviour
 {
-    [SerializeField] private MicrophoneDropdown microphoneDropdown;
+    [FormerlySerializedAs("microphoneDropdown")] [SerializeField] private MicrophoneSelector microphoneSelector;
     
 }
