@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using Processors;
+using TMPro;
 using UnityEngine;
 
 public class AudioManager : MonoBehaviour
@@ -45,11 +46,10 @@ public class AudioManager : MonoBehaviour
 
     public void StartRecording()
     {
-        selectedMicName = microphoneSelector.GetSelectedMicro();
+        selectedMicName = microphoneSelector.GetSelectedMicro().Name;
 
         microphoneClip = Microphone.Start(selectedMicName, true, 1, sampleRate);
         
-
         while (!(Microphone.GetPosition(selectedMicName) > 0))
         {
         }
