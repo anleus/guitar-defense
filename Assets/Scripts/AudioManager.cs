@@ -1,70 +1,41 @@
-﻿using Processors;
+﻿using System.Globalization;
+using Processors;
 using TMPro;
 using UnityEngine;
 
+[RequireComponent(typeof(FMODMicroRecorder), typeof(MicrophoneSelector))]
 public class AudioManager : MonoBehaviour
 {
     [Header("References")] 
-    [SerializeField] private AudioSource guitarAudioSource;
     [SerializeField] private MicrophoneSelector microphoneSelector;
+    [SerializeField] private FMODMicroRecorder fmodMicroRecorder;
     [SerializeField] private TMP_Text noteText;
-
-    [Header("Settings")] 
-    [SerializeField] private int sampleRate = 44100;
-    [SerializeField] private int sampleWindow = 4096;
-    
-    private PitchProcessor pitchProcessor;
-    private AudioClip microphoneClip;
-    private float[] audioSamples;
-
-    private bool isRecording;
-    private string selectedMicName;
-
-    private void Start()
-    {
-        audioSamples = new float[sampleWindow];
-        pitchProcessor = new PitchProcessor(sampleRate);
-    }
 
     private void Update()
     {
-        if (!isRecording) return;
-
-        var micPos = Microphone.GetPosition(selectedMicName) - sampleWindow;
-        if (micPos < 0)
-        {
-            noteText.text = "---";
-            return;
-        }
-
-        microphoneClip.GetData(audioSamples, micPos);
-
-        var frequency = pitchProcessor.Process(audioSamples);
-
-        noteText.text = frequency;
+        var freq = fmodMicroRecorder.GetMicroSoundFrequency();
+        noteText.text = FrequencyToNote(freq);
     }
-
+    
     public void StartRecording()
     {
-        selectedMicName = microphoneSelector.GetSelectedMicro().Name;
-
-        microphoneClip = Microphone.Start(selectedMicName, true, 1, sampleRate);
-        
-        while (!(Microphone.GetPosition(selectedMicName) > 0))
-        {
-        }
-
-        guitarAudioSource.clip = microphoneClip;
-        guitarAudioSource.loop = true;
-        guitarAudioSource.Play();
-        
-        isRecording = true;
+        fmodMicroRecorder.StartRecording(microphoneSelector.GetSelectedMicro());
     }
 
     public void StopRecording()
     {
-        Microphone.End(selectedMicName);
+        fmodMicroRecorder.StopRecording(microphoneSelector.GetSelectedMicro());
+        noteText.text = FrequencyToNote(0f);
+    }
 
-        isRecording = false;
+    private string FrequencyToNote(float frequency)
+    {
+        if (frequency <= 0f) return "---";
+
+        var midi = Mathf.RoundToInt(12f * Mathf.Log(frequency / 440f, 2f) + 69f);
+        var octave = (midi / 12) - 1;
+        string[] names = { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
+        var note = names[midi % 12];
+        return $"{note}{octave}";
     }
 }

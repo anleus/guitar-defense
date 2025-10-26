@@ -48,7 +48,7 @@ public class MicrophoneSelector : MonoBehaviour
             RuntimeManager.CoreSystem.getRecordDriverInfo(
                 i,
                 out var deviceName,
-                50,
+                100,
                 out var guid,
                 out var systemRate,
                 out var speakerMode,
@@ -57,7 +57,8 @@ public class MicrophoneSelector : MonoBehaviour
             );
             var connected = state.HasFlag(DRIVER_STATE.CONNECTED);
 
-            if (connected && !deviceName.ToLower().Contains("loop"))
+            //filters for devices that are a microphone
+            if (connected && !deviceName.ToLower().Contains("loopback"))
             {
                 var device = new DeviceInfo(i, deviceName, guid, systemRate, speakerMode, channels, state);
                 deviceOptions.Add(device);
