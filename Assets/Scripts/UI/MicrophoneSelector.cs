@@ -1,84 +1,82 @@
+using System.Collections;
 using System.Collections.Generic;
+using Audio.Models;
+using Events;
 using FMOD;
 using FMODUnity;
-using Models;
 using TMPro;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
-public class MicrophoneSelector : MonoBehaviour
+namespace UI
 {
-    [SerializeField] private TMP_Dropdown deviceDropdown;
-
-    private readonly List<DeviceInfo> deviceOptions = new();
-
-    public int SelectedMicroIndex { get; private set; } = -1;
-
-    private void Awake()
+    public class MicrophoneSelector : MonoBehaviour
     {
-        SetMicOptions();
-    }
+        [SerializeField] private TMP_Dropdown deviceDropdown;
 
-    public bool AvailableMicros()
-    {
-        return deviceOptions.Count > 0;
-    }
+        private readonly List<DeviceInfo> deviceOptions = new();
 
-    public DeviceInfo GetSelectedMicro()
-    {
-        return deviceOptions[SelectedMicroIndex];
-    }
+        public int SelectedMicroIndex { get; private set; } = -1;
 
-    private void SetMicOptions()
-    {
-        RuntimeManager.CoreSystem.getRecordNumDrivers(out var numOfDrivers, out var numOfDriversConnected);
-        deviceOptions.Clear();
-        deviceDropdown.options.Clear();
-
-        if (numOfDriversConnected == 0)
+        private IEnumerator Start()
         {
-            Debug.Log("Connect a device");
-            return;
+            yield return new WaitForSeconds(0.5f);
+            SetMicOptions();
         }
 
-        var deviceNames = new List<string>();
-
-        for (var i = 0; i < numOfDriversConnected; i++)
+        private void SetMicOptions()
         {
-            RuntimeManager.CoreSystem.getRecordDriverInfo(
-                i,
-                out var deviceName,
-                100,
-                out var guid,
-                out var systemRate,
-                out var speakerMode,
-                out var channels,
-                out var state
-            );
-            var connected = state.HasFlag(DRIVER_STATE.CONNECTED);
+            RuntimeManager.CoreSystem.getRecordNumDrivers(out var numOfDrivers, out var numOfDriversConnected);
+            deviceOptions.Clear();
+            deviceDropdown.options.Clear();
 
-            //filters for devices that are a microphone
-            if (connected && !deviceName.ToLower().Contains("loopback"))
+            if (numOfDriversConnected == 0)
             {
-                var device = new DeviceInfo(i, deviceName, guid, systemRate, speakerMode, channels, state);
-                deviceOptions.Add(device);
-                deviceNames.Add(device.Name);
+                Debug.Log("Connect a device");
+                return;
             }
+
+            var deviceNames = new List<string>();
+
+            for (var i = 0; i < numOfDriversConnected; i++)
+            {
+                RuntimeManager.CoreSystem.getRecordDriverInfo(
+                    i,
+                    out var deviceName,
+                    100,
+                    out var guid,
+                    out var systemRate,
+                    out var speakerMode,
+                    out var channels,
+                    out var state
+                );
+                var connected = state.HasFlag(DRIVER_STATE.CONNECTED);
+
+                //filters for devices that are a microphone
+                if (connected && !deviceName.ToLower().Contains("loopback"))
+                {
+                    var device = new DeviceInfo(i, deviceName, guid, systemRate, speakerMode, channels, state);
+                    deviceOptions.Add(device);
+                    deviceNames.Add(device.Name);
+                }
+            }
+
+            deviceDropdown.AddOptions(deviceNames);
+
+            if (deviceOptions.Count <= 0) return;
+
+            SelectedMicroIndex = 0;
+            UIEvents.MicroSelected(deviceOptions[SelectedMicroIndex]);
+            Debug.Log("Default selected index " + SelectedMicroIndex + " -> " +
+                      deviceDropdown.options[SelectedMicroIndex].text);
         }
 
-        deviceDropdown.AddOptions(deviceNames);
 
-        if (deviceOptions.Count <= 0) return;
-
-        SelectedMicroIndex = 0;
-        Debug.Log("Default selected index " + SelectedMicroIndex + " -> " +
-                  deviceDropdown.options[SelectedMicroIndex].text);
-    }
-
-
-    public void OnOptionSelected(int index)
-    {
-        SelectedMicroIndex = index;
-        Debug.Log("Selected index " + index + " -> " + deviceDropdown.options[index].text);
+        public void OnOptionSelected(int index)
+        {
+            SelectedMicroIndex = index;
+            UIEvents.MicroSelected(deviceOptions[SelectedMicroIndex]);
+            Debug.Log("Selected index " + index + " -> " + deviceDropdown.options[index].text);
+        }
     }
 }

@@ -1,63 +1,46 @@
-using System.Linq;
+﻿using Audio.Models;
 using UnityEngine;
 
-namespace Processors
+namespace Audio.Processors
 {
     public class PitchProcessor
     {
-        private readonly int sampleRate;
+        private float sampleRate = 0f;
 
-        public PitchProcessor(int sampleRate)
+        public void SetSampleRate(float sampleRate)
         {
             this.sampleRate = sampleRate;
         }
 
-        public string Process(float[] samples)
+        public NoteInfo Analyze(float[] fftSpectrum, int numBins)
         {
-            var volume = GetVolume(samples);
-            if (volume < 0.01f) return "---";
-
-            var frequency = GetFrequency(samples);
-            if (frequency is < 60f or > 1300f) return "---";
-        
-            Debug.Log(frequency);
-
-            return FrequencyToNoteName(frequency);
-        }
-
-        private float GetVolume(float[] data)
-        {
-            var sum = data.Sum(s => s * s);
-            return Mathf.Sqrt(sum / data.Length);
-        }
-
-        private float GetFrequency(float[] data)
-        {
-            var bestLag = 0;
-            var bestCorr = 0f;
-        
-            for (var lag = 20; lag < data.Length / 2; lag++)
+            if (sampleRate == 0f) return null;
+            
+            var maxMag = 0f;
+            var maxBin = 0;
+            //search for the highest frequency band (dominant)
+            for (var i = 0; i < fftSpectrum.Length; i++)
             {
-                var sum = 0f;
-                for (var i = 0; i < data.Length - lag; i++)
-                    sum += data[i] * data[i + lag];
-
-                if (sum > bestCorr)
+                if (fftSpectrum[i] > maxMag)
                 {
-                    bestCorr = sum;
-                    bestLag = lag;
+                    maxMag = fftSpectrum[i];
+                    maxBin = i;
                 }
             }
 
-            if (bestLag == 0) return 0f;
-            return sampleRate / (float)bestLag;
+            if (!(maxMag > 0f)) return null;
+            
+            var frequency = maxBin * sampleRate / (float)numBins;
+            var note = FrequencyToNote(frequency);
+            
+            return new NoteInfo(note, frequency);
         }
-
-        private string FrequencyToNoteName(float freq)
+        
+        private string FrequencyToNote(float frequency)
         {
-            if (freq <= 0f) return "???";
+            if (frequency <= 0f) return "---";
 
-            var midi = Mathf.RoundToInt(12f * Mathf.Log(freq / 440f, 2f) + 69f);
+            var midi = Mathf.RoundToInt(12f * Mathf.Log(frequency / 440f, 2f) + 69f);
             var octave = (midi / 12) - 1;
             string[] names = { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
             var note = names[midi % 12];

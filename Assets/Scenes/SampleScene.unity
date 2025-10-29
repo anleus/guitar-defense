@@ -389,18 +389,6 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
---- !u!114 &498520834 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7659108776080882909, guid: e22b9bbbe7a6ae04a873211ae2d3c8b0,
-    type: 3}
-  m_PrefabInstance: {fileID: 5511236887059793828}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &648602518
 GameObject:
   m_ObjectHideFlags: 0
@@ -560,7 +548,6 @@ GameObject:
   - component: {fileID: 1370826335}
   - component: {fileID: 1370826336}
   - component: {fileID: 1370826337}
-  - component: {fileID: 1370826338}
   m_Layer: 0
   m_Name: AudioManager
   m_TagString: Untagged
@@ -596,9 +583,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 258b77444fb44603942efe91bb96a8e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudioManager
-  microphoneSelector: {fileID: 2045983172}
   fmodMicroRecorder: {fileID: 1370826337}
-  noteText: {fileID: 498520834}
+  isRecording: 0
+  isAnalyzing: 0
+  refreshInterval: 0.05
 --- !u!114 &1370826337
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -612,31 +600,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Processors.FMODPitchProcessor
   latency: 0.5
---- !u!114 &1370826338
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1370826333}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b438397fd6dec48b2bc7bf2162f9c1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MicrophoneSelector
-  deviceDropdown: {fileID: 5511236887059793829}
---- !u!114 &2045983172 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4562549025613249595, guid: e22b9bbbe7a6ae04a873211ae2d3c8b0,
-    type: 3}
-  m_PrefabInstance: {fileID: 5511236887059793828}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b438397fd6dec48b2bc7bf2162f9c1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &5511236887059793828
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -795,18 +758,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e22b9bbbe7a6ae04a873211ae2d3c8b0, type: 3}
---- !u!114 &5511236887059793829 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1470828853603443304, guid: e22b9bbbe7a6ae04a873211ae2d3c8b0,
-    type: 3}
-  m_PrefabInstance: {fileID: 5511236887059793828}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7b743370ac3e4ec2a1668f5455a8ef8a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
