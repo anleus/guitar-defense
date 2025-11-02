@@ -20,7 +20,7 @@ namespace Editor
         private VisualElement rightPanel;
         private ScrollView eventListContainer;
         private VisualElement paramContainer;
-        private HelpBox playingHelpBox;
+        private Button invokeButton;
         
         private Func<object>[] currentGetters;
 
@@ -44,14 +44,6 @@ namespace Editor
         private void OnPlayModeStateChanged(PlayModeStateChange state)
         {
             isPlaying = EditorApplication.isPlaying;
-            
-            leftPanel?.SetEnabled(isPlaying);
-            paramContainer?.Clear();
-
-            if (playingHelpBox != null)
-            {
-                playingHelpBox.visible = !isPlaying;
-            }
         }
 
         public void CreateGUI()
@@ -71,17 +63,11 @@ namespace Editor
             eventListContainer = new ScrollView();
             eventListContainer.style.flexGrow = 1;
             leftPanel.Add(eventListContainer);
-            
-            leftPanel.SetEnabled(isPlaying);
 
             //Right panel
             rightPanel = new VisualElement();
             rightPanel.style.flexDirection = FlexDirection.Column;
             splitView.Add(rightPanel);
-            
-            playingHelpBox = new HelpBox("Editor needs to be in play mode to use the window", HelpBoxMessageType.Warning);
-            rightPanel.Add(playingHelpBox);
-            playingHelpBox.visible = !EditorApplication.isPlaying;
             
             paramContainer = new VisualElement();
             paramContainer.style.flexGrow = 1;
@@ -180,7 +166,7 @@ namespace Editor
                 }
             }
 
-            var invokeButton = new Button(() =>
+            invokeButton = new Button(() =>
             {
                 var args = currentGetters.Select(g => g()).ToArray();
                 method.Invoke(null, args);
@@ -196,6 +182,7 @@ namespace Editor
             };
 
             paramContainer.Add(invokeButton);
+            invokeButton.SetEnabled(isPlaying);
         }
         
         private VisualElement CreateInputField(Type type, out Func<object> getter)

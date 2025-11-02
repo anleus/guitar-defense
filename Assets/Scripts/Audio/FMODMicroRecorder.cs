@@ -17,7 +17,7 @@ namespace Audio
         private FMOD.ChannelGroup channelGroup;
         private FMOD.DSP fftDsp;
         
-        private const int FFTSize = 1024;
+        private const int FFTSize = 4096;
 
         public void StartRecording(DeviceInfo deviceInfo)
         {
@@ -43,7 +43,7 @@ namespace Audio
             if (RuntimeManager.CoreSystem.createDSPByType(FMOD.DSP_TYPE.FFT, out fftDsp) == FMOD.RESULT.OK)
             {
                 fftDsp.setParameterInt((int)FMOD.DSP_FFT.WINDOW, (int)FMOD.DSP_FFT_WINDOW_TYPE.HANNING);
-                fftDsp.setParameterInt((int)FMOD.DSP_FFT.WINDOWSIZE, FFTSize * 2);
+                fftDsp.setParameterInt((int)FMOD.DSP_FFT.WINDOWSIZE, FFTSize);
 
                 channel.addDSP(FMOD.CHANNELCONTROL_DSP_INDEX.HEAD, fftDsp);
             } 
@@ -67,14 +67,14 @@ namespace Audio
             sound.release();
         }
         
-        public float[] GetSpectrumData()
+        public (float[] spectrum, int numBins) GetSpectrumData()
         {
-            if (!fftDsp.hasHandle()) return null;
+            if (!fftDsp.hasHandle()) return (Array.Empty<float>(), 0);
 
             fftDsp.getParameterData((int)FMOD.DSP_FFT.SPECTRUMDATA, out var unmanagedData, out uint _);
             var fftData = (FMOD.DSP_PARAMETER_FFT)Marshal.PtrToStructure(unmanagedData, typeof(FMOD.DSP_PARAMETER_FFT));
 
-            if (fftData.numchannels <= 0) return null;
+            if (fftData.numchannels <= 0) return (Array.Empty<float>(), 0);
 
             var spectrum = new float[fftData.length];
             for (var i = 0; i < fftData.numchannels; i++)
@@ -82,7 +82,7 @@ namespace Audio
                 spectrum = new float[fftData.length];
             }
             fftData.getSpectrum(0, ref spectrum);
-            return spectrum;
+            return (spectrum, fftData.length);
         }
     }
 }

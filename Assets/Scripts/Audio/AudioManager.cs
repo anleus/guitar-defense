@@ -15,27 +15,18 @@ namespace Audio
         [SerializeField] private FMODMicroRecorder fmodMicroRecorder;
         private PitchProcessor pitchProcessor;
         
-        [Header("Contraints")]
+        [Header("Constraints")]
         [SerializeField] private bool isRecording;
         [SerializeField] private bool isAnalyzing;
-        private float[] currentSpectrum;
-        private int currentNumBins;
+        
         private DeviceInfo currentDevice;
         
-        private Coroutine refreshSpectrumCoroutine;
+        private Coroutine analyseSpectrumCoroutine;
         [SerializeField] private float refreshInterval = 0.05f;
 
         private void Start()
         {
             pitchProcessor = new PitchProcessor();
-        }
-
-        private void Update()
-        {
-            if (!isAnalyzing || currentSpectrum == null) return;
-
-            var noteInfo = pitchProcessor.Analyze(currentSpectrum, currentSpectrum.Length);
-            Debug.Log(noteInfo);
         }
 
         public void StartRecording()
@@ -56,20 +47,24 @@ namespace Audio
             if (!isRecording) return;
             
             isAnalyzing = enable;
-            if (refreshSpectrumCoroutine != null)
+            if (analyseSpectrumCoroutine != null)
             {
-                StopCoroutine(refreshSpectrumCoroutine);
-                refreshSpectrumCoroutine = null;
+                StopCoroutine(analyseSpectrumCoroutine);
+                analyseSpectrumCoroutine = null;
             }
-            if (isAnalyzing) refreshSpectrumCoroutine = StartCoroutine(RefreshSpectrum());
+            if (isAnalyzing) analyseSpectrumCoroutine = StartCoroutine(AnalyseSpectrum());
         }
 
-        private IEnumerator RefreshSpectrum()
+        private IEnumerator AnalyseSpectrum()
         {
             while (isRecording && isAnalyzing)
             {
-                var spectrum = fmodMicroRecorder.GetSpectrumData();
-                currentSpectrum = spectrum;
+                var (spectrum, numBeans) = fmodMicroRecorder.GetSpectrumData();
+                
+                var noteInfo = pitchProcessor.Analyze(spectrum, numBeans);
+                Debug.Log(noteInfo);
+                
+                AudioEvents.NoteDetected(noteInfo.Note, noteInfo.Frequency);
 
                 yield return new WaitForSeconds(refreshInterval);
             }
@@ -83,17 +78,6 @@ namespace Audio
         
         private void OnEnable()
         {
-            AddEventListeners();
-        }
-
-        private void OnDisable()
-        {
-            RemoveEventListeners();
-            fmodMicroRecorder.StopRecording(currentDevice);
-        }
-
-        private void AddEventListeners()
-        {
             GameEvents.OnGameLoopStart += () => EnableAnalysis(true);
             GameEvents.OnGameLoopPause += () => EnableAnalysis(false);
             GameEvents.OnGameLoopStop += () => EnableAnalysis(false);
@@ -101,13 +85,15 @@ namespace Audio
             UIEvents.OnMicroSelected += SetCurrentDevice;
         }
 
-        private void RemoveEventListeners()
+        private void OnDisable()
         {
             GameEvents.OnGameLoopStart -= () => EnableAnalysis(true);
             GameEvents.OnGameLoopPause -= () => EnableAnalysis(false);
             GameEvents.OnGameLoopStop -= () => EnableAnalysis(false);
 
             UIEvents.OnMicroSelected -= SetCurrentDevice;
+            
+            fmodMicroRecorder.StopRecording(currentDevice);
         }
     }
 }

@@ -11,5 +11,12 @@ namespace Events
         {
             OnMicroSelected?.Invoke(deviceInfo);
         }
+
+        public static event Action<bool> OnToggleTuner;
+        public static void ToggleTuner(bool visible)
+        {
+            OnToggleTuner?.Invoke(visible);
+        }
+        
     }
 }
