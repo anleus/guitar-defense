@@ -13,7 +13,7 @@ namespace Events
         }
 
         public static event Action<bool> OnToggleTuner;
-        public static void ToggleTuner(bool visible)
+        public static void TunerVisible(bool visible)
         {
             OnToggleTuner?.Invoke(visible);
         }

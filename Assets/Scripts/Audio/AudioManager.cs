@@ -19,10 +19,9 @@ namespace Audio
         [SerializeField] private bool isRecording;
         [SerializeField] private bool isAnalyzing;
         
-        private DeviceInfo currentDevice;
-        
         private Coroutine analyseSpectrumCoroutine;
         [SerializeField] private float refreshInterval = 0.05f;
+        [SerializeField] private int sampleCount = 4096;
 
         private void Start()
         {
@@ -31,13 +30,13 @@ namespace Audio
 
         public void StartRecording()
         {
-            fmodMicroRecorder.StartRecording(currentDevice);
+            fmodMicroRecorder.StartRecording();
             isRecording = true;
         }
 
         public void StopRecording()
         {
-            fmodMicroRecorder.StopRecording(currentDevice);
+            fmodMicroRecorder.StopRecording();
             isRecording = false;
             isAnalyzing = false;
         }
@@ -59,21 +58,23 @@ namespace Audio
         {
             while (isRecording && isAnalyzing)
             {
-                var (spectrum, numBeans) = fmodMicroRecorder.GetSpectrumData();
+                var pcmData = fmodMicroRecorder.GetPCMData(sampleCount);
                 
-                var noteInfo = pitchProcessor.Analyze(spectrum, numBeans);
-                Debug.Log(noteInfo);
-                
-                AudioEvents.NoteDetected(noteInfo.Note, noteInfo.Frequency);
+                var noteInfo = pitchProcessor.Process(pcmData);
+
+                if (noteInfo != null)
+                {
+                    Debug.Log(noteInfo);
+                    AudioEvents.NoteDetected(noteInfo.Note, noteInfo.Frequency);
+                }
 
                 yield return new WaitForSeconds(refreshInterval);
             }
         }
 
-        private void SetCurrentDevice(DeviceInfo device)
+        private void SetCurrentSampleRate(DeviceInfo device)
         {
-            currentDevice = device;
-            pitchProcessor.SetSampleRate(device.SampleRate);
+            pitchProcessor.SetSampleRate(device?.SampleRate ?? 0f);
         }
         
         private void OnEnable()
@@ -82,7 +83,7 @@ namespace Audio
             GameEvents.OnGameLoopPause += () => EnableAnalysis(false);
             GameEvents.OnGameLoopStop += () => EnableAnalysis(false);
             
-            UIEvents.OnMicroSelected += SetCurrentDevice;
+            UIEvents.OnMicroSelected += SetCurrentSampleRate;
         }
 
         private void OnDisable()
@@ -91,9 +92,7 @@ namespace Audio
             GameEvents.OnGameLoopPause -= () => EnableAnalysis(false);
             GameEvents.OnGameLoopStop -= () => EnableAnalysis(false);
 
-            UIEvents.OnMicroSelected -= SetCurrentDevice;
-            
-            fmodMicroRecorder.StopRecording(currentDevice);
+            UIEvents.OnMicroSelected -= SetCurrentSampleRate;
         }
     }
 }

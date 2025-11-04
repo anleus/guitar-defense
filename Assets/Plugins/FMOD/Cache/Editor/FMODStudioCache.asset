@@ -15,10 +15,10 @@ MonoBehaviour:
   Path: C:/Users/tomas/Documents/FMOD Studio/guitar-defense/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638967278579004739
+  lastModified: 638978846078537177
   FileSizes:
   - Name: Desktop
-    Value: 724
+    Value: 760
   Exists: 1
 --- !u!114 &11400000
 MonoBehaviour:
@@ -42,7 +42,7 @@ MonoBehaviour:
   StringsBanks:
   - {fileID: -6180389934856151344}
   cacheVersion: 131849
-  cacheTime: 638967278579004739
+  cacheTime: 638978846078537177
   SerializableEventsDict: []
 --- !u!114 &280430586709740092
 MonoBehaviour:
@@ -59,8 +59,8 @@ MonoBehaviour:
   Path: C:/Users/tomas/Documents/FMOD Studio/guitar-defense/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638967278578974737
+  lastModified: 638978846078517189
   FileSizes:
   - Name: Desktop
-    Value: 1074
+    Value: 1232
   Exists: 1
