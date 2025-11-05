@@ -30,16 +30,6 @@ namespace UI
         private int currentString;
         private Coroutine refreshCoroutine;
 
-        private const int Tunings = 2;
-        private int currentTunings = -1;
-        
-        private FMOD.Studio.EventInstance instance;
-
-        private void Start()
-        {
-            instance = FMODUnity.RuntimeManager.CreateInstance("event:/tuning/check");
-        }
-
         public void ToggleUI()
         {
             var toggleAnim = LeanTween.moveX(container, visible ? -375f : 0, 0.75f);
@@ -51,18 +41,11 @@ namespace UI
             ResetValues();
             visible = !visible;
             UIEvents.TunerVisible(visible);
-
-            if (visible)
-            {
-                ManageToggleButton(false);
-                ManageTuningIndicator();
-            }
         }
 
         private void ResetValues()
         {
             currentString = 0;
-            currentTunings = -1;
             noteText.text = "-";
             up.fillAmount = 0f;
             down.fillAmount = 0f;
@@ -109,9 +92,6 @@ namespace UI
             if (!visible) return;
 
             CheckStatus();
-
-            instance.start();
-            instance.release();
             
             indicatorImage.color = Color.limeGreen;
             var indicatorAnim = LeanTween.moveY(stringIndicator, notes[currentString].anchoredPosition.y, 0.5f);
@@ -126,35 +106,8 @@ namespace UI
             }
             else
             {
-                if (currentTunings < Tunings)
-                {
-                    currentTunings++;
-                    currentString = 0;
-                    ManageTuningIndicator();
-                }
-                else
-                {
-                    ManageToggleButton(true);
-                    ToggleUI();
-                }
+                currentString = 0;
             }
-        }
-
-        private void ManageTuningIndicator()
-        {
-            if (currentTunings == -1)
-            {
-                foreach (var indicator in tuningIndicators) indicator.color = Color.white;
-            }
-            else
-            {
-                tuningIndicators[currentTunings].color = Color.limeGreen;
-            }
-        }
-
-        private void ManageToggleButton(bool interactable)
-        {
-            toggleButton.interactable = interactable;
         }
 
         private void OnEnable()

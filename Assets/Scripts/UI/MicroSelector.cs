@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using Audio.Models;
 using Events;
 using FMOD;
 using FMODUnity;
+using Models;
 using TMPro;
 using UnityEngine;
 using Debug = UnityEngine.Debug;

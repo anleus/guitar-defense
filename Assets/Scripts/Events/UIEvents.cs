@@ -1,5 +1,5 @@
 ﻿using System;
-using Audio.Models;
+using Models;
 using UnityEngine;
 
 namespace Events

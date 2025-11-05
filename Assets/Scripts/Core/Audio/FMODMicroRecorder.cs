@@ -1,12 +1,12 @@
 using System;
 using System.Collections;
 using System.Runtime.InteropServices;
-using Audio.Models;
 using Events;
 using FMODUnity;
+using Models;
 using UnityEngine;
 
-namespace Audio
+namespace Core.Audio
 {
     public class FMODMicroRecorder : MonoBehaviour
     {

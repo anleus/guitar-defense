@@ -1,10 +1,9 @@
 using System.Collections;
-using System.Collections.Generic;
 using Events;
 using UnityEngine;
 using Utils;
 
-namespace Audio
+namespace Core.Audio
 {
     public class Tuner : MonoBehaviour
     {

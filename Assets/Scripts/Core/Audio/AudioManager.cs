@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections;
-using Audio.Models;
-using Audio.Processors;
+﻿using System.Collections;
+using Core.Audio.Processors;
 using Events;
-using TMPro;
+using Models;
 using UnityEngine;
 
-namespace Audio
+namespace Core.Audio
 {
     [RequireComponent(typeof(FMODMicroRecorder))]
     public class AudioManager : MonoBehaviour

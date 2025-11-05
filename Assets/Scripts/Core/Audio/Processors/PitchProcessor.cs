@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using Audio.Models;
+﻿using System.Linq;
+using Models;
 using UnityEngine;
 
-namespace Audio.Processors
+namespace Core.Audio.Processors
 {
     public class PitchProcessor
     {

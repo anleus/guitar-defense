@@ -1,7 +1,7 @@
 ﻿using System;
 using FMOD;
 
-namespace Audio.Models
+namespace Models
 {
     [Serializable]
     public class DeviceInfo

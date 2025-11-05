@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Audio.Models
+namespace Models
 {
     [Serializable]
     public class NoteInfo
