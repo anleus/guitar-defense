@@ -14,6 +14,7 @@ namespace Core
 
         private IEnumerator Start()
         {
+            PlayerPrefs.DeleteAll();
             yield return new WaitForSeconds(0.2f);
 
             StartCoroutine(HasDefaultSettings()

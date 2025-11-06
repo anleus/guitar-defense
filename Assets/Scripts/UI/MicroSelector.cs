@@ -12,6 +12,7 @@ namespace UI
 {
     public class MicroSelector : MonoBehaviour
     {
+        [SerializeField] private bool setDefault;
         [SerializeField] private TMP_Dropdown deviceDropdown;
 
         private readonly List<DeviceInfo> deviceOptions = new();
@@ -66,9 +67,13 @@ namespace UI
             if (deviceOptions.Count <= 0) return;
 
             selectedMicroIndex = 0;
-            UIEvents.MicroSelected(deviceOptions[selectedMicroIndex]);
-            Debug.Log("Default selected index " + selectedMicroIndex + " -> " +
-                      deviceDropdown.options[selectedMicroIndex].text);
+
+            if (setDefault)
+            {
+                UIEvents.MicroSelected(deviceOptions[selectedMicroIndex]);
+                Debug.Log("Default selected index " + selectedMicroIndex + " -> " +
+                          deviceDropdown.options[selectedMicroIndex].text);
+            }
         }
 
 

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using Events;
 using Models;
+using Models.Enums;
 using UnityEngine;
 using Utils;
 
@@ -34,6 +35,7 @@ namespace Core
         public void Next()
         {
             CoroutineUtils.RestartCoroutine(this, ref stopTestCoroutine, StopTest());
+            SceneEvents.SceneChange(SceneId.MainMenu);
         }
 
         private IEnumerator StartTest()

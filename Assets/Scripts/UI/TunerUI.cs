@@ -120,7 +120,7 @@ namespace UI
             
             indicatorImage.color = Color.limeGreen;
             var indicatorAnim = LeanTween.moveY(stringIndicator, notes[currentString].anchoredPosition.y, 0.5f);
-            indicatorAnim.setOnComplete(() => indicatorImage.color = Color.black);
+            indicatorAnim.setOnComplete(() => indicatorImage.color = Color.white);
         }
 
         private void CheckStatus()
