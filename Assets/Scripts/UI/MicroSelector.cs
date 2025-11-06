@@ -16,7 +16,7 @@ namespace UI
 
         private readonly List<DeviceInfo> deviceOptions = new();
 
-        public int SelectedMicroIndex { get; private set; } = -1;
+        private int selectedMicroIndex = -1;
 
         private IEnumerator Start()
         {
@@ -65,17 +65,17 @@ namespace UI
 
             if (deviceOptions.Count <= 0) return;
 
-            SelectedMicroIndex = 0;
-            UIEvents.MicroSelected(deviceOptions[SelectedMicroIndex]);
-            Debug.Log("Default selected index " + SelectedMicroIndex + " -> " +
-                      deviceDropdown.options[SelectedMicroIndex].text);
+            selectedMicroIndex = 0;
+            UIEvents.MicroSelected(deviceOptions[selectedMicroIndex]);
+            Debug.Log("Default selected index " + selectedMicroIndex + " -> " +
+                      deviceDropdown.options[selectedMicroIndex].text);
         }
 
 
         public void OnOptionSelected(int index)
         {
-            SelectedMicroIndex = index;
-            UIEvents.MicroSelected(deviceOptions[SelectedMicroIndex]);
+            selectedMicroIndex = index;
+            UIEvents.MicroSelected(deviceOptions[selectedMicroIndex]);
             Debug.Log("Selected index " + index + " -> " + deviceDropdown.options[index].text);
         }
     }

@@ -21,26 +21,51 @@ namespace UI
         [SerializeField] private Image up;
         [SerializeField] private Image down;
 
-        [Header("Tunings")] 
-        [SerializeField] private List<Image> tuningIndicators;
-
+        [Header("Toggle")] 
         [SerializeField] private Button toggleButton;
+        
+        [Header("Constraints")]
+        [SerializeField] private bool hasAnimation;
 
         private bool visible;
         private int currentString;
         private Coroutine refreshCoroutine;
+        
+        private void OnEnable()
+        {
+            UIEvents.OnToggleTuningUI += ToggleUI;
+            
+            AudioEvents.OnTuningProgress += UpdateNoteIndicator;
+            AudioEvents.OnStringTuned += MoveIndicatorToNextPosition;
+        }
+
+        private void OnDisable()
+        {
+            UIEvents.OnToggleTuningUI -= ToggleUI;
+            
+            AudioEvents.OnTuningProgress -= UpdateNoteIndicator;
+            AudioEvents.OnStringTuned -= MoveIndicatorToNextPosition;
+        }
 
         public void ToggleUI()
         {
-            var toggleAnim = LeanTween.moveX(container, visible ? -375f : 0, 0.75f);
-            toggleAnim.setOnComplete(OnToggle);
+            Debug.Log("toggle");
+            if (hasAnimation)
+            {
+                var toggleAnim = LeanTween.moveX(container, visible ? -375f : 0, 0.75f);
+                toggleAnim.setOnComplete(OnToggle);
+            }
+            else
+            {
+                OnToggle();
+            }
         }
 
         private void OnToggle()
         {
             ResetValues();
             visible = !visible;
-            UIEvents.TunerVisible(visible);
+            UIEvents.VisibleTuningUI(visible);
         }
 
         private void ResetValues()
@@ -110,16 +135,9 @@ namespace UI
             }
         }
 
-        private void OnEnable()
+        public void ToggleRequest()
         {
-            AudioEvents.OnTuningProgress += UpdateNoteIndicator;
-            AudioEvents.OnStringTuned += MoveIndicatorToNextPosition;
-        }
-
-        private void OnDisable()
-        {
-            AudioEvents.OnTuningProgress -= UpdateNoteIndicator;
-            AudioEvents.OnStringTuned -= MoveIndicatorToNextPosition;
+            UIEvents.ToggleTuningRequest();
         }
     }
 }

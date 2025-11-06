@@ -2,7 +2,9 @@
 using Core.Audio.Processors;
 using Events;
 using Models;
+using Models.Enums;
 using UnityEngine;
+using UnityEngine.Audio;
 
 namespace Core.Audio
 {
@@ -11,59 +13,95 @@ namespace Core.Audio
     {
         [Header("References")] 
         [SerializeField] private FMODMicroRecorder fmodMicroRecorder;
+        [SerializeField] private Tuner tuner;
         private PitchProcessor pitchProcessor;
         
-        [Header("Constraints")]
-        [SerializeField] private bool isRecording;
-        [SerializeField] private bool isAnalyzing;
+        [Header("Status")]
+        [SerializeField] private AudioManagerState currentState = AudioManagerState.Idle;
         
         private Coroutine analyseSpectrumCoroutine;
         [SerializeField] private float refreshInterval = 0.05f;
         [SerializeField] private int sampleCount = 4096;
+        
+        private void OnEnable()
+        {
+            GameEvents.OnStartRecordingRequest += StartRecording;
+            GameEvents.OnStopRecordingRequest += StopRecording;
+            GameEvents.OnStartAnalyzingRequest += StartAnalyzing;
+            GameEvents.OnStopAnalyzingRequest += StopAnalyzing;
+            
+            UIEvents.OnMicroSelected += SetCurrentSampleRate;
+        }
+
+        private void OnDisable()
+        {
+            GameEvents.OnStartRecordingRequest -= StartRecording;
+            GameEvents.OnStopRecordingRequest -= StopRecording;
+            GameEvents.OnStartAnalyzingRequest -= StartAnalyzing;
+            GameEvents.OnStopAnalyzingRequest -= StopAnalyzing;
+
+            UIEvents.OnMicroSelected -= SetCurrentSampleRate;
+
+            StopRecording();
+        }
 
         private void Start()
         {
             pitchProcessor = new PitchProcessor();
         }
 
-        public void StartRecording()
+        private void StartRecording()
         {
+            Debug.Log("StartRecording");
+            if (currentState != AudioManagerState.Idle) StopRecording();
+                
             fmodMicroRecorder.StartRecording();
-            isRecording = true;
+            currentState = AudioManagerState.Recording;
         }
 
-        public void StopRecording()
+        private void StopRecording()
         {
+            if (currentState == AudioManagerState.Idle) return;
+            
             fmodMicroRecorder.StopRecording();
-            isRecording = false;
-            isAnalyzing = false;
+            currentState = AudioManagerState.Idle;
         }
         
-        private void EnableAnalysis(bool enable)
+        private void StartAnalyzing()
         {
-            if (!isRecording) return;
+            if (currentState != AudioManagerState.Recording) return;
+
+            currentState = AudioManagerState.Analyzing;
+            analyseSpectrumCoroutine = StartCoroutine(AnalyseSpectrum());
+            AudioEvents.StartAnalyzing();
+        }
+
+        private void StopAnalyzing()
+        {
+            if (currentState != AudioManagerState.Analyzing) return;
+
+            if (analyseSpectrumCoroutine == null) return;
+
+            StopCoroutine(analyseSpectrumCoroutine);
+
+            analyseSpectrumCoroutine = null;
+            currentState = AudioManagerState.Recording;
             
-            isAnalyzing = enable;
-            if (analyseSpectrumCoroutine != null)
-            {
-                StopCoroutine(analyseSpectrumCoroutine);
-                analyseSpectrumCoroutine = null;
-            }
-            if (isAnalyzing) analyseSpectrumCoroutine = StartCoroutine(AnalyseSpectrum());
+            AudioEvents.StopAnalyzing();
         }
 
         private IEnumerator AnalyseSpectrum()
         {
-            while (isRecording && isAnalyzing)
+            while (currentState == AudioManagerState.Analyzing)
             {
                 var pcmData = fmodMicroRecorder.GetPCMData(sampleCount);
-                
                 var noteInfo = pitchProcessor.Process(pcmData);
 
                 if (noteInfo != null)
                 {
                     Debug.Log(noteInfo);
-                    AudioEvents.NoteDetected(noteInfo.Note, noteInfo.Frequency);
+                    tuner.UpdateCurrentPitch(noteInfo);
+                    AudioEvents.NoteDetected(noteInfo.Name);
                 }
 
                 yield return new WaitForSeconds(refreshInterval);
@@ -73,24 +111,6 @@ namespace Core.Audio
         private void SetCurrentSampleRate(DeviceInfo device)
         {
             pitchProcessor.SetSampleRate(device?.SampleRate ?? 0f);
-        }
-        
-        private void OnEnable()
-        {
-            GameEvents.OnGameLoopStart += () => EnableAnalysis(true);
-            GameEvents.OnGameLoopPause += () => EnableAnalysis(false);
-            GameEvents.OnGameLoopStop += () => EnableAnalysis(false);
-            
-            UIEvents.OnMicroSelected += SetCurrentSampleRate;
-        }
-
-        private void OnDisable()
-        {
-            GameEvents.OnGameLoopStart -= () => EnableAnalysis(true);
-            GameEvents.OnGameLoopPause -= () => EnableAnalysis(false);
-            GameEvents.OnGameLoopStop -= () => EnableAnalysis(false);
-
-            UIEvents.OnMicroSelected -= SetCurrentSampleRate;
         }
     }
 }

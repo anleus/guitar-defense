@@ -5,22 +5,40 @@ namespace Events
 {
     public static class GameEvents
     {
-        public static event Action OnGameLoopStart;
-        public static void GameLoopStart()
+        public static event Action OnStartRecordingRequest;
+        public static void StartRecordingRequest()
         {
-            OnGameLoopStart?.Invoke();
+            OnStartRecordingRequest?.Invoke();
         }
         
-        public static event Action OnGameLoopPause;
-        public static void GameLoopPause()
+        public static event Action OnStopRecordingRequest;
+        public static void StopRecordingRequest()
         {
-            OnGameLoopPause?.Invoke();
+            OnStopRecordingRequest?.Invoke();
         }
         
-        public static event Action OnGameLoopStop;
-        public static void GameLoopStop()
+        public static event Action OnStartAnalyzingRequest;
+        public static void StartAnalyzingRequest()
         {
-            OnGameLoopStop?.Invoke();
+            OnStartAnalyzingRequest?.Invoke();
+        }
+        
+        public static event Action OnStopAnalyzingRequest;
+        public static void StopAnalyzingRequest()
+        {
+            OnStopAnalyzingRequest?.Invoke();
+        }
+        
+        public static event Action OnStartTuningRequest;
+        public static void StartTuningRequest()
+        {
+            OnStartTuningRequest?.Invoke();
+        }
+        
+        public static event Action OnStopTuningRequest;
+        public static void StopTuningRequest()
+        {
+            OnStopTuningRequest?.Invoke();
         }
     }
 }

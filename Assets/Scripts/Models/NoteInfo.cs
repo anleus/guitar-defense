@@ -5,18 +5,18 @@ namespace Models
     [Serializable]
     public class NoteInfo
     {
-        public string Note { get; }
+        public string Name { get; }
         public float Frequency { get; }
 
-        public NoteInfo(string note, float frequency)
+        public NoteInfo(string name, float frequency)
         {
-            Note = note;
+            Name = name;
             Frequency = frequency;
         }
 
         public override string ToString()
         {
-            return $"{Note}-{Frequency}";
+            return $"{Name}-{Frequency}";
         }
     }
 }

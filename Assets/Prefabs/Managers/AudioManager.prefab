@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2911343102055703408}
   - component: {fileID: 5364381985093835705}
   - component: {fileID: 8406745037781300244}
+  - component: {fileID: 4393052483077712763}
   m_Layer: 0
   m_Name: AudioManager
   m_TagString: Untagged
@@ -31,8 +32,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 2161484115710406182}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2911343102055703408
@@ -48,8 +48,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudioManager
   fmodMicroRecorder: {fileID: 5364381985093835705}
-  isRecording: 0
-  isAnalyzing: 0
+  tuner: {fileID: 8406745037781300244}
+  currentState: 0
   refreshInterval: 0.1
   sampleCount: 4096
 --- !u!114 &5364381985093835705
@@ -79,34 +79,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Audio.Tuner
   toleranceCents: 5
   checkInterval: 0.1
---- !u!1 &8391341633939430885
-GameObject:
+--- !u!114 &4393052483077712763
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2161484115710406182}
-  m_Layer: 0
-  m_Name: AudioSource
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2161484115710406182
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8391341633939430885}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 285.19302, y: 187.51372, z: -2.2788813}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 7016130899530772127}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_GameObject: {fileID: 7922161431415923655}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e837a873d95ab4a4e9366f596533f669, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Utils.DontDestroyOnLoad

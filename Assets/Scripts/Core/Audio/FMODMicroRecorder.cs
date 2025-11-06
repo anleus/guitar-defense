@@ -2,9 +2,12 @@ using System;
 using System.Collections;
 using System.Runtime.InteropServices;
 using Events;
+using FMOD;
 using FMODUnity;
 using Models;
+using Models.Enums;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace Core.Audio
 {
@@ -21,6 +24,43 @@ namespace Core.Audio
         private const int FFTSize = 4096;
 
         private DeviceInfo currentDevice;
+
+        private void Start()
+        {
+            if (currentDevice == null && PlayerPrefs.HasKey("deviceName"))
+            {
+                SelectDeviceByName(PlayerPrefs.GetString("deviceName"));    
+            }
+        }
+
+        private void SelectDeviceByName(string savedDeviceName)
+        {
+            RuntimeManager.CoreSystem.getRecordNumDrivers(out var numOfDrivers, out var numOfDriversConnected);
+            
+            for (var i = 0; i < numOfDriversConnected; i++)
+            {
+                RuntimeManager.CoreSystem.getRecordDriverInfo(
+                    i,
+                    out var deviceName,
+                    100,
+                    out var guid,
+                    out var systemRate,
+                    out var speakerMode,
+                    out var channels,
+                    out var state
+                );
+                var connected = state.HasFlag(DRIVER_STATE.CONNECTED);
+                
+                if (connected && savedDeviceName == deviceName)
+                {
+                    var device = new DeviceInfo(i, deviceName, guid, systemRate, speakerMode, channels, state);
+                    currentDevice = device;
+                    return;
+                }
+                SceneEvents.SceneChange(SceneId.InitialSettings);
+            }
+
+        }
 
         public void StartRecording()
         {
@@ -58,6 +98,8 @@ namespace Core.Audio
 
         public void StopRecording()
         {
+            if (currentDevice == null) return;
+            
             if (fftDsp.hasHandle())
             {
                 channel.removeDSP(fftDsp);
@@ -70,7 +112,6 @@ namespace Core.Audio
         
             RuntimeManager.CoreSystem.recordStop(currentDevice.Index);
             sound.release();
-            currentDevice = null;
         }
         
         public float[] GetPCMData(int sampleCount)
@@ -101,16 +142,17 @@ namespace Core.Audio
             }
 
             // 5. Copiar datos de los punteros a un array manejado
-            int totalSamples = (int)((len1 + len2) / bytesPerSample);
+            int totalSamples = (int)((len1 + len2) / sizeof(short));
             float[] pcmData = new float[totalSamples];
 
             int offset = 0;
+
             if (len1 > 0)
             {
                 short[] temp1 = new short[len1 / sizeof(short)];
                 Marshal.Copy(ptr1, temp1, 0, temp1.Length);
                 for (int i = 0; i < temp1.Length; i++)
-                    pcmData[offset++] = temp1[i] / 32768f; // Normalizar a [-1, 1]
+                    pcmData[offset++] = temp1[i] / 32768f;
             }
 
             if (len2 > 0)
@@ -126,16 +168,24 @@ namespace Core.Audio
 
             return pcmData;
         }
+
+        private void SetNewDevice(DeviceInfo deviceInfo)
+        {
+            if (currentDevice != null)
+            {
+                StopRecording();
+            }
+            currentDevice = deviceInfo;
+        }
         
         private void OnEnable()
         {
-            UIEvents.OnMicroSelected += deviceInfo => currentDevice = deviceInfo;
+            UIEvents.OnMicroSelected += SetNewDevice;
         }
 
         private void OnDisable()
         {
-            StopRecording();
-            UIEvents.OnMicroSelected -= _ => currentDevice = null;
+            UIEvents.OnMicroSelected -= SetNewDevice;
         }
     }
 }
