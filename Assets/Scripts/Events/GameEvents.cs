@@ -1,10 +1,25 @@
 using System;
+using Models;
 using UnityEngine;
 
 namespace Events
 {
     public static class GameEvents
     {
+
+        public static event Action<EnemyNoteInfo> OnSpawnEnemy;
+
+        public static void SpawnEnemy(EnemyNoteInfo enemyNoteInfo)
+        {
+            OnSpawnEnemy?.Invoke(enemyNoteInfo);
+        }
+
+        public static event Action<EnemyNoteInfo> OnSpawnInitialEnemies;
+        public static void SpawnInitialEnemies(EnemyNoteInfo enemyNoteInfo)
+        {
+            OnSpawnInitialEnemies?.Invoke(enemyNoteInfo);
+        }
+        
         public static event Action OnStartRecordingRequest;
         public static void StartRecordingRequest()
         {

@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Models;
 using UnityEngine;
+using Utils;
 
 namespace Core.Audio.Processors
 {
@@ -26,7 +27,7 @@ namespace Core.Audio.Processors
             return new NoteInfo(note, frequency);
         }
         
-        private float GetVolume(float[] data)
+        private static float GetVolume(float[] data)
         {
             var sum = data.Sum(s => s * s);
             return Mathf.Sqrt(sum / data.Length);
@@ -57,7 +58,7 @@ namespace Core.Audio.Processors
             return sampleRate / (float)bestLag;
         }
 
-        private string FrequencyToNote(float frequency)
+        private static string FrequencyToNote(float frequency)
         {
             if (frequency <= 0f) return "---";
 

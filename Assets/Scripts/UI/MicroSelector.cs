@@ -68,12 +68,11 @@ namespace UI
 
             selectedMicroIndex = 0;
 
-            if (setDefault)
-            {
-                UIEvents.MicroSelected(deviceOptions[selectedMicroIndex]);
-                Debug.Log("Default selected index " + selectedMicroIndex + " -> " +
-                          deviceDropdown.options[selectedMicroIndex].text);
-            }
+            if (!setDefault) return;
+            
+            UIEvents.MicroSelected(deviceOptions[selectedMicroIndex]);
+            Debug.Log("Default selected index " + selectedMicroIndex + " -> " +
+                      deviceDropdown.options[selectedMicroIndex].text);
         }
 
 
