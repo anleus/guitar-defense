@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: EnemyBase
   m_EditorClassIdentifier: Assembly-CSharp::Scriptables.Enemies.EnemyBasic
   health: 1
-  speed: 2
+  speed: 1
   linked: 0
   linkedNum: 1
   sprite: {fileID: 0}
-  spawnProbability: 0
+  spawnProbability: 0.55

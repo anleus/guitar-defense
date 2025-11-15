@@ -30,5 +30,23 @@ namespace Events
         {
             OnVisibleTuningUI?.Invoke(visible);
         }
+
+        public static event Action<int> OnRefreshScore;
+        public static void RefreshScore(int score)
+        {
+            OnRefreshScore?.Invoke(score);
+        }
+        
+        public static event Action<string, Sprite> OnRefreshPatternData;
+        public static void RefreshPatternData(string patternName, Sprite patternImage)
+        {
+            OnRefreshPatternData?.Invoke(patternName, patternImage);
+        }
+
+        public static event Action<int> OnRefreshLivesIndicator;
+        public static void RefreshLivesIndicator(int livesIndicator)
+        {
+            OnRefreshLivesIndicator?.Invoke(livesIndicator);
+        }
     }
 }

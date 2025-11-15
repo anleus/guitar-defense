@@ -34,15 +34,15 @@ namespace Core
         
         public void Next()
         {
-            CoroutineUtils.RestartCoroutine(this, ref stopTestCoroutine, StopTest());
+            CoroutineUtils.RestartCoroutine(this, ref stopTestCoroutine, StopTest(), false);
             SceneEvents.SceneChange(SceneId.MainMenu);
         }
 
         private IEnumerator StartTest()
         {
-            GameEvents.StartRecordingRequest();
+            AudioEvents.StartRecordingRequest();
             yield return new WaitForSeconds(0.1f);
-            GameEvents.StartAnalyzingRequest();
+            AudioEvents.StartAnalyzingRequest();
             yield return new WaitForSeconds(0.1f);
             UIEvents.ToggleTuningRequest();
         }
@@ -51,9 +51,9 @@ namespace Core
         {
             UIEvents.ToggleTuningRequest();
             yield return new WaitForSeconds(0.1f);
-            GameEvents.StopAnalyzingRequest();
+            AudioEvents.StopAnalyzingRequest();
             yield return new WaitForSeconds(0.1f);
-            GameEvents.StopRecordingRequest();
+            AudioEvents.StopRecordingRequest();
         }
     }
 }

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using Core.Enemy;
 using Models;
 using UnityEngine;
 
@@ -8,7 +10,6 @@ namespace Events
     {
 
         public static event Action<EnemyNoteInfo> OnSpawnEnemy;
-
         public static void SpawnEnemy(EnemyNoteInfo enemyNoteInfo)
         {
             OnSpawnEnemy?.Invoke(enemyNoteInfo);
@@ -20,40 +21,28 @@ namespace Events
             OnSpawnInitialEnemies?.Invoke(enemyNoteInfo);
         }
         
-        public static event Action OnStartRecordingRequest;
-        public static void StartRecordingRequest()
+        public static event Action<EnemyController, List<EnemyNoteInfo>> OnSpawnLinkedEnemies;
+        public static void SpawnLinkedEnemies(EnemyController parent, List<EnemyNoteInfo> enemyNoteInfos)
         {
-            OnStartRecordingRequest?.Invoke();
+            OnSpawnLinkedEnemies?.Invoke(parent, enemyNoteInfos);
         }
         
-        public static event Action OnStopRecordingRequest;
-        public static void StopRecordingRequest()
-        {
-            OnStopRecordingRequest?.Invoke();
+        public static event Action<LinkedEnemyRequest> OnLinkedEnemyRequest;
+        public static void SpawnLinkedEnemyRequest(LinkedEnemyRequest request) {
+            OnLinkedEnemyRequest?.Invoke(request);
         }
-        
-        public static event Action OnStartAnalyzingRequest;
-        public static void StartAnalyzingRequest()
+
+        public static event Action OnEnemyKilled;
+
+        public static void EnemyKilled()
         {
-            OnStartAnalyzingRequest?.Invoke();
+            OnEnemyKilled?.Invoke();
         }
-        
-        public static event Action OnStopAnalyzingRequest;
-        public static void StopAnalyzingRequest()
+
+        public static event Action OnEnemyDamage;
+        public static void EnemyDamage()
         {
-            OnStopAnalyzingRequest?.Invoke();
-        }
-        
-        public static event Action OnStartTuningRequest;
-        public static void StartTuningRequest()
-        {
-            OnStartTuningRequest?.Invoke();
-        }
-        
-        public static event Action OnStopTuningRequest;
-        public static void StopTuningRequest()
-        {
-            OnStopTuningRequest?.Invoke();
+            OnEnemyDamage?.Invoke();
         }
     }
 }

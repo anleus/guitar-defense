@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00389bb6af0f8bb4dad395d0db5d1688, type: 3}
   m_Name: EnemyBoss
   m_EditorClassIdentifier: Assembly-CSharp::Scriptables.Enemies.EnemyBasic
-  health: 5
-  speed: 2
-  isLinked: 0
+  health: 3
+  speed: 1
+  linked: 0
+  linkedNum: 1
+  sprite: {fileID: 0}
+  spawnProbability: 0.15

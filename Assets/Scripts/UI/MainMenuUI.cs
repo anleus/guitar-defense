@@ -1,4 +1,5 @@
-using System;
+using Events;
+using Models.Enums;
 using UnityEngine;
 
 namespace UI
@@ -9,7 +10,7 @@ namespace UI
         
         public void Play()
         {
-            throw new NotImplementedException();
+            SceneEvents.SceneChange(SceneId.Gameplay);
         }
 
         public void Options()

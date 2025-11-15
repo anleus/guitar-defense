@@ -25,20 +25,20 @@ namespace Core.Audio
         
         private void OnEnable()
         {
-            GameEvents.OnStartRecordingRequest += StartRecording;
-            GameEvents.OnStopRecordingRequest += StopRecording;
-            GameEvents.OnStartAnalyzingRequest += StartAnalyzing;
-            GameEvents.OnStopAnalyzingRequest += StopAnalyzing;
+            AudioEvents.OnStartRecordingRequest += StartRecording;
+            AudioEvents.OnStopRecordingRequest += StopRecording;
+            AudioEvents.OnStartAnalyzingRequest += StartAnalyzing;
+            AudioEvents.OnStopAnalyzingRequest += StopAnalyzing;
             
             UIEvents.OnMicroSelected += SetCurrentSampleRate;
         }
 
         private void OnDisable()
         {
-            GameEvents.OnStartRecordingRequest -= StartRecording;
-            GameEvents.OnStopRecordingRequest -= StopRecording;
-            GameEvents.OnStartAnalyzingRequest -= StartAnalyzing;
-            GameEvents.OnStopAnalyzingRequest -= StopAnalyzing;
+            AudioEvents.OnStartRecordingRequest -= StartRecording;
+            AudioEvents.OnStopRecordingRequest -= StopRecording;
+            AudioEvents.OnStartAnalyzingRequest -= StartAnalyzing;
+            AudioEvents.OnStopAnalyzingRequest -= StopAnalyzing;
 
             UIEvents.OnMicroSelected -= SetCurrentSampleRate;
 
