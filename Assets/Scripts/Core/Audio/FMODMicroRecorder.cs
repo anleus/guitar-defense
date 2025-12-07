@@ -141,7 +141,6 @@ namespace Core.Audio
                 return Array.Empty<float>();
             }
 
-            // 5. Copiar datos de los punteros a un array manejado
             int totalSamples = (int)((len1 + len2) / sizeof(short));
             float[] pcmData = new float[totalSamples];
 
@@ -163,7 +162,6 @@ namespace Core.Audio
                     pcmData[offset++] = temp2[i] / 32768f;
             }
 
-            // 6. Liberar el lock
             sound.unlock(ptr1, ptr2, len1, len2);
 
             return pcmData;

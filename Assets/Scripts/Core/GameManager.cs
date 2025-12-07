@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Events;
+using FMODUnity;
 using JetBrains.Annotations;
 using Models;
 using Models.Enums;
@@ -17,6 +18,11 @@ namespace Core
 
         [SerializeField] private int score;
         [SerializeField] private float spawnRate;
+
+        [Header("FMOD events")] 
+        [SerializeField] private EventReference enemyKillEvent;
+        [SerializeField] private EventReference enemyDamageEvent;
+        
 
         private void OnEnable()
         {
@@ -65,15 +71,30 @@ namespace Core
 
         private IEnumerator Loop()
         {
+            var interval = 2.5f;
+            const float minInterval = 1f;
+            var lastThreshold = 0;
+            
             while (lives > 0)
             {
                 var (note, stringNum) = currentPattern.GetNote();
                 var fretRelativeIndex = currentPattern.GetIndexFromFret(note.fret);
                 var enemyNoteInfo = new EnemyNoteInfo(note.name, stringNum, note.fret, fretRelativeIndex,
                     currentPattern.GetStringColor(stringNum));
+
+                /*if (score < 25) GameEvents.SpawnInitialEnemies(enemyNoteInfo);
+                else */
                 GameEvents.SpawnEnemy(enemyNoteInfo);
                 
-                yield return new WaitForSeconds(2.5f);
+                var threshold = score / 25;
+                if (threshold > lastThreshold)
+                {
+                    lastThreshold = threshold;
+                    interval = Mathf.Max(minInterval, interval - 0.25f);
+                    
+                }
+
+                yield return new WaitForSeconds(interval);
             }
         }
 
@@ -102,12 +123,14 @@ namespace Core
         {
             score++;
             UIEvents.RefreshScore(score);
+            RuntimeManager.PlayOneShot(enemyKillEvent, transform.position);
         }
 
         private void ReduceHealth()
         {
             lives = lives - 1 < 0 ? 0 : lives - 1;
             UIEvents.RefreshLivesIndicator(lives);
+            RuntimeManager.PlayOneShot(enemyDamageEvent, transform.position);
 
             if (lives == 0)
             {

@@ -78,3 +78,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Audio.Tuner
   toleranceCents: 5
   checkInterval: 0.1
+  stringCheckEvent:
+    Guid:
+      Data1: 1229816476
+      Data2: 1128159523
+      Data3: 189913237
+      Data4: 1479635032
+    Path: event:/tuning/check

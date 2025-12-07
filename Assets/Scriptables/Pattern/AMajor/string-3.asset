@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: string-3
   m_EditorClassIdentifier: Assembly-CSharp::Models.GuitarString
   stringNum: 3
-  color: {r: 0.36862746, g: 0.74509805, b: 0.28627452, a: 1}
+  color: {r: 0.4073445, g: 0.9622642, b: 0.28595585, a: 1}
   notes:
   - name: B3
     fret: 4

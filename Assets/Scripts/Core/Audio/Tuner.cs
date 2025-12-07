@@ -1,5 +1,6 @@
 using System.Collections;
 using Events;
+using FMODUnity;
 using Models;
 using UnityEngine;
 using Utils;
@@ -10,6 +11,9 @@ namespace Core.Audio
     {
         [SerializeField] private float toleranceCents = 5f;
         [SerializeField] private float checkInterval = 0.1f;
+        
+        [Header("FMOD events")] 
+        [SerializeField] private EventReference stringCheckEvent;
 
         private bool analyzing;
         private bool uiVisible;
@@ -93,6 +97,7 @@ namespace Core.Audio
                     if (Mathf.Abs(deviation) <= toleranceCents)
                     {
                         tuned = true;
+                        RuntimeManager.PlayOneShot(stringCheckEvent, transform.position);
                         AudioEvents.StringTuned();
                     }
                     yield return new WaitForSeconds(checkInterval);
@@ -101,7 +106,7 @@ namespace Core.Audio
             }
         }
         
-        // Coverts freq difference to cents (1 semitone = 100 cents)
+        // Converts freq difference to cents (1 semitone = 100 cents)
         private float FrequencyToCents(float freq, float target)
         {
             return 1200f * Mathf.Log(freq / target, 2f);

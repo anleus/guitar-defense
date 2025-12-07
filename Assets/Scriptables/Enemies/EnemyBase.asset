@@ -16,5 +16,5 @@ MonoBehaviour:
   speed: 1
   linked: 0
   linkedNum: 1
-  sprite: {fileID: 0}
+  sprite: {fileID: 21300000, guid: 22d93daecd56e634f972929ee9fcd532, type: 3}
   spawnProbability: 0.55

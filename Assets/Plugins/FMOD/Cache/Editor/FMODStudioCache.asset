@@ -15,10 +15,10 @@ MonoBehaviour:
   Path: C:/Users/tomas/Documents/FMOD Studio/guitar-defense/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638978846078537177
+  lastModified: 639007286274580549
   FileSizes:
   - Name: Desktop
-    Value: 760
+    Value: 972
   Exists: 1
 --- !u!114 &11400000
 MonoBehaviour:
@@ -35,15 +35,27 @@ MonoBehaviour:
   EditorBanks:
   - {fileID: -6180389934856151344}
   - {fileID: 280430586709740092}
-  EditorEvents: []
+  EditorEvents:
+  - {fileID: 832387529193849908}
+  - {fileID: 5300038407987110250}
+  - {fileID: 8830307244437612696}
+  - {fileID: 5302089334511263748}
   EditorParameters: []
   MasterBanks:
   - {fileID: 280430586709740092}
   StringsBanks:
   - {fileID: -6180389934856151344}
   cacheVersion: 131849
-  cacheTime: 638978846078537177
-  SerializableEventsDict: []
+  cacheTime: 639007286274580549
+  SerializableEventsDict:
+  - key: event:/game/background
+    index: 0
+  - key: event:/game/enemyKilled
+    index: 1
+  - key: event:/game/enemyDamage
+    index: 2
+  - key: event:/tuning/check
+    index: 3
 --- !u!114 &280430586709740092
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59,8 +71,116 @@ MonoBehaviour:
   Path: C:/Users/tomas/Documents/FMOD Studio/guitar-defense/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638978846078517189
+  lastModified: 639007286273673633
   FileSizes:
   - Name: Desktop
-    Value: 1232
+    Value: 8774048
   Exists: 1
+--- !u!114 &832387529193849908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/game/background
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorEventRef
+  Path: event:/game/background
+  Guid:
+    Data1: 1493230154
+    Data2: 1319979544
+    Data3: 275124870
+    Data4: -1502775941
+  Banks:
+  - {fileID: 280430586709740092}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 730532
+--- !u!114 &5300038407987110250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/game/enemyKilled
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorEventRef
+  Path: event:/game/enemyKilled
+  Guid:
+    Data1: -589663936
+    Data2: 1100710597
+    Data3: 565934768
+    Data4: -1980825842
+  Banks:
+  - {fileID: 280430586709740092}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &5302089334511263748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/tuning/check
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorEventRef
+  Path: event:/tuning/check
+  Guid:
+    Data1: 1229816476
+    Data2: 1128159523
+    Data3: 189913237
+    Data4: 1479635032
+  Banks:
+  - {fileID: 280430586709740092}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &8830307244437612696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/game/enemyDamage
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorEventRef
+  Path: event:/game/enemyDamage
+  Guid:
+    Data1: -2039465660
+    Data2: 1151534040
+    Data3: -1113109621
+    Data4: -1163983035
+  Banks:
+  - {fileID: 280430586709740092}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
