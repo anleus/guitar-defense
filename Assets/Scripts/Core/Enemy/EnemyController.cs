@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Core.Effects;
 using Events;
 using Models;
 using TMPro;
@@ -23,6 +24,7 @@ namespace Core.Enemy
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private TMP_Text noteText;
         [SerializeField] private LineRenderer lineRenderer;
+        [SerializeField] private ParticleController particlePrefab;
 
         private void OnEnable()
         {
@@ -124,8 +126,7 @@ namespace Core.Enemy
                 KillInChain();
                 return;
             }
-
-            // Enemigo normal
+            
             health--;
             if (health <= 0)
             {
@@ -137,6 +138,7 @@ namespace Core.Enemy
         {
             IsDead = true;
             GameEvents.EnemyKilled();
+            ObjectPoolManager.SpawnObject(particlePrefab, transform.position,  transform.rotation, ObjectPoolManager.PoolType.ParticleSystem);
             Despawn();
         }
         
@@ -237,7 +239,6 @@ namespace Core.Enemy
             }
             else
             {
-                // Enemigo normal: daño y despawn
                 GameEvents.EnemyDamage();
                 Despawn();
             }

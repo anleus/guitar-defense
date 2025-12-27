@@ -68,7 +68,7 @@ namespace Core
 
         private static void OnGetGameObject(GameObject gameObject)
         {
-            //optional logic
+            
         }
 
         private static void OnReleaseGameObject(GameObject gameObject)

@@ -321,6 +321,8 @@ MonoBehaviour:
   spriteRenderer: {fileID: 871222386852177314}
   noteText: {fileID: 1887624846792255510}
   lineRenderer: {fileID: 963468685809880892}
+  particlePrefab: {fileID: 2380706973397187600, guid: a79a045103587864e8b135a5ae4f16d7,
+    type: 3}
 --- !u!120 &963468685809880892
 LineRenderer:
   serializedVersion: 2
