@@ -29,9 +29,9 @@ namespace Models
             return guitarString.notes.Find(n => n.fret == fret);
         }
 
-        public (GuitarNote, int) GetNote()
+        public (GuitarNote, int) GetNote(int limit = -1)
         {
-            var randomString = Random.Range(0, guitarStrings.Count);
+            var randomString = Random.Range(0, limit == -1 ? guitarStrings.Count : limit);
             var notes =  guitarStrings[randomString].notes;
 
             return GetRandomNoteFromString(randomString, notes);

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Events;
@@ -13,15 +14,20 @@ namespace Core
     {
         public GuitarPattern currentPattern;
 
-        [Header("Configuration")] [SerializeField]
-        private int lives = 3;
+        [Header("Configuration")] 
+        [SerializeField] private int lives = 3;
 
         [SerializeField] private int score;
+        private const int ScoreGap = 25;
         [SerializeField] private float spawnRate;
+
+        [Header("UI")] 
+        [SerializeField] private GameObject tutorialUI;
 
         [Header("FMOD events")] 
         [SerializeField] private EventReference enemyKillEvent;
         [SerializeField] private EventReference enemyDamageEvent;
+        [SerializeField] private StudioEventEmitter backgroundMusicEmitter;
         
 
         private void OnEnable()
@@ -40,12 +46,36 @@ namespace Core
 
         private void Start()
         {
+            PlayerPrefs.DeleteKey("tutorial");
+            if (CheckTutorial()) StartCoroutine(Game());
             UIEvents.RefreshPatternData(currentPattern.patternName, currentPattern.patternImage);
+        }
+
+        private bool CheckTutorial()
+        {
+            if (!PlayerPrefs.HasKey("tutorial") || PlayerPrefs.GetInt("tutorial") == 0)
+            {
+                tutorialUI.SetActive(true);
+                return false;
+            }
+
+            tutorialUI.SetActive(false);
+            return true;
+        }
+
+        public void StartGameAfterTutorial()
+        {
+            PlayerPrefs.SetInt("tutorial", 1);
+            tutorialUI.SetActive(false);
             StartCoroutine(Game());
         }
 
         private IEnumerator Game()
         {
+            backgroundMusicEmitter.Play();
+            
+            yield return new WaitForSeconds(1f);
+            
             yield return InitialSequence();
             
             yield return Loop();
@@ -64,7 +94,7 @@ namespace Core
                         note.name, guitarString.stringNum, note.fret, fretRelativeIndex, guitarString.color);
                     GameEvents.SpawnInitialEnemies(enemyNoteInfo);
 
-                    yield return new WaitForSeconds(1.5f);
+                    yield return new WaitForSeconds(2.5f);
                 }
             }
         }
@@ -77,16 +107,11 @@ namespace Core
             
             while (lives > 0)
             {
-                var (note, stringNum) = currentPattern.GetNote();
-                var fretRelativeIndex = currentPattern.GetIndexFromFret(note.fret);
-                var enemyNoteInfo = new EnemyNoteInfo(note.name, stringNum, note.fret, fretRelativeIndex,
-                    currentPattern.GetStringColor(stringNum));
-
-                /*if (score < 25) GameEvents.SpawnInitialEnemies(enemyNoteInfo);
-                else */
+                var enemyNoteInfo = GetEnemyNoteInfo();
+                
                 GameEvents.SpawnEnemy(enemyNoteInfo);
                 
-                var threshold = score / 25;
+                var threshold = score / ScoreGap;
                 if (threshold > lastThreshold)
                 {
                     lastThreshold = threshold;
@@ -96,6 +121,16 @@ namespace Core
 
                 yield return new WaitForSeconds(interval);
             }
+        }
+
+        private EnemyNoteInfo GetEnemyNoteInfo()
+        {
+            var maxString = Math.Max(3 + (score / ScoreGap), 6);
+            
+            var (note, stringNum) = currentPattern.GetNote(maxString);
+            var fretRelativeIndex = currentPattern.GetIndexFromFret(note.fret);
+            return new EnemyNoteInfo(note.name, stringNum, note.fret, fretRelativeIndex,
+                currentPattern.GetStringColor(stringNum));
         }
 
         private void HandleLinkedEnemy(LinkedEnemyRequest request)
